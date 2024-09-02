@@ -1,0 +1,46 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # الخطوة 1: تحقق من الكود من المستودع
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # الخطوة 2: إعداد Conda
+      - name: Set up Miniconda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: 3.10
+          auto-activate-base: true
+
+      # الخطوة 3: تحقق من الملفات
+      - name: List files
+        run: ls -R /home/runner/work/Camscanyourface/Camscanyourface/
+
+      # الخطوة 4: تحديث البيئة
+      - name: Update Conda environment
+        run: |
+          conda env update --file environment.yml --name base
+          
+      # الخطوة 5: تفعيل البيئة (اختياري)
+      - name: Activate Conda environment
+        run: |
+          source activate base
+
+      # الخطوة 6: تشغيل الأوامر المطلوبة
+      - name: Run tests
+        run: |
+          conda activate base
+          # أضف هنا الأوامر التي تريد تشغيلها بعد تحديث البيئة
+          pytest
